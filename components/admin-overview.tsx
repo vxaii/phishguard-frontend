@@ -5,6 +5,7 @@ import { ShieldBan, ScanLine, Users, type LucideIcon } from 'lucide-react'
 import { DonutChart } from '@/components/donut-chart'
 import { ScanTable } from '@/components/scan-table'
 import type { ScanRecord } from '@/lib/mock-data'
+import { API_URL } from '@/lib/api'
 
 function StatCard({
   icon: Icon,
@@ -53,7 +54,7 @@ export function AdminOverview() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/admin/stats')
+    fetch(`${API_URL}/admin/stats`)
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok')
         return res.json()

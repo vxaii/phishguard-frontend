@@ -7,6 +7,7 @@ import { ConfidenceGauge } from '@/components/confidence-gauge'
 import { PredictionBadge } from '@/components/prediction-badge'
 import { ScanTable } from '@/components/scan-table'
 import type { Prediction, ScanRecord } from '@/lib/mock-data'
+import { API_URL } from '@/lib/api'
 
 interface Result {
   url: string
@@ -22,7 +23,7 @@ export function DetectView({ userId }: { userId?: number }) {
 
   const fetchRecent = () => {
     const queryStr = userId ? `?user_id=${userId}` : ''
-    fetch(`http://localhost:8000/history${queryStr}`)
+    fetch(`${API_URL}/history${queryStr}`)
       .then(res => res.json())
       .then(data => {
         const mapped: ScanRecord[] = data.slice(0, 5).map((d: any) => ({
@@ -49,7 +50,7 @@ export function DetectView({ userId }: { userId?: number }) {
     setResult(null)
     
     try {
-      const response = await fetch('http://localhost:8000/predict', {
+      const response = await fetch(`${API_URL}/predict`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

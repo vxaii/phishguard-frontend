@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { Eye, EyeOff, Lock, Mail, ShieldCheck, Sparkles, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { API_URL } from '@/lib/api'
 
 export interface User {
   id: number
@@ -33,7 +34,7 @@ export function AuthView({ onAuth }: { onAuth: (user: User) => void }) {
     const endpoint = mode === 'signin' ? '/login' : '/register'
 
     try {
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const res = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -60,7 +61,7 @@ export function AuthView({ onAuth }: { onAuth: (user: User) => void }) {
     try {
       // Autentikasi Google / Gmail
       const userEmail = 'user.gmail@gmail.com'
-      const res = await fetch(`http://localhost:8000/login`, {
+      const res = await fetch(`${API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: userEmail, password: 'google_oauth_bypass' })
@@ -68,7 +69,7 @@ export function AuthView({ onAuth }: { onAuth: (user: User) => void }) {
 
       if (!res.ok) {
         // Jika belum terdaftar, otomatis daftarkan akun Gmail
-        const regRes = await fetch(`http://localhost:8000/register`, {
+        const regRes = await fetch(`${API_URL}/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: userEmail, password: 'google_oauth_bypass' })

@@ -1,10 +1,11 @@
-﻿'use client'
+'use client'
 
 import { useMemo, useState, useEffect } from 'react'
 import { ListFilter, Search, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ScanTable } from '@/components/scan-table'
 import type { ScanRecord, Prediction } from '@/lib/mock-data'
+import { API_URL } from '@/lib/api'
 
 type Filter = 'ALL' | Prediction
 
@@ -15,7 +16,7 @@ export function GlobalHistoryView() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/admin/history')
+    fetch(`${API_URL}/admin/history`)
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok')
         return res.json()

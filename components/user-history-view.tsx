@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { Search } from 'lucide-react'
 import { ScanTable } from '@/components/scan-table'
 import type { ScanRecord } from '@/lib/mock-data'
+import { API_URL } from '@/lib/api'
 
 export function UserHistoryView({ userId }: { userId?: number }) {
   const [query, setQuery] = useState('')
@@ -11,7 +12,7 @@ export function UserHistoryView({ userId }: { userId?: number }) {
 
   useEffect(() => {
     const queryStr = userId ? `?user_id=${userId}` : ''
-    fetch(`http://localhost:8000/history${queryStr}`)
+    fetch(`${API_URL}/history${queryStr}`)
       .then(res => res.json())
       .then(data => {
         const mapped: ScanRecord[] = data.map((d: any) => ({

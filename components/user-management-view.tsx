@@ -1,9 +1,10 @@
-﻿'use client'
+'use client'
 
 import { useMemo, useState, useEffect } from 'react'
 import { Search, UserPlus, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { API_URL } from '@/lib/api'
 
 interface ManagedUser {
   id: string
@@ -20,7 +21,7 @@ export function UserManagementView() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8000/admin/users')
+    fetch(`${API_URL}/admin/users`)
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok')
         return res.json()
