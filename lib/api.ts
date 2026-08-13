@@ -1,2 +1,2 @@
 export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || "https://phishguard-api-01v8.onrender.com";
+  process.env.NEXT_PUBLIC_API_URL || "https://phishguard-api-hrkm.onrender.com";
