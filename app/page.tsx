@@ -82,6 +82,10 @@ export default function Page() {
     return <AuthView onAuth={handleAuth} />
   }
 
+  const rawName = user.email.split('@')[0]
+  const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
+  const initials = rawName.substring(0, 2).toUpperCase()
+
   if (user.role === 'admin') {
     return (
       <DashboardShell
@@ -90,9 +94,9 @@ export default function Page() {
         navItems={adminNav}
         activeKey={adminTab}
         onNavigate={setAdminTab}
-        userName="Admin User"
+        userName={formattedName}
         userEmail={user.email}
-        userInitials={user.email.substring(0, 2).toUpperCase()}
+        userInitials={initials}
         onLogout={handleLogout}
       >
         {adminTab === 'overview' && <AdminOverview />}
@@ -110,9 +114,9 @@ export default function Page() {
       navItems={userNav}
       activeKey={userTab}
       onNavigate={setUserTab}
-      userName="Pengguna"
+      userName={formattedName}
       userEmail={user.email}
-      userInitials={user.email.substring(0, 2).toUpperCase()}
+      userInitials={initials}
       onLogout={handleLogout}
     >
       {userTab === 'detect' && <DetectView userId={user.id} />}

@@ -131,7 +131,7 @@ export function DashboardShell({
 
             <div className="min-w-0">
               <p className="truncate text-sm font-semibold sm:text-base">
-                Halo, {userName.split(' ')[0]}
+                Halo, {userName}
               </p>
               <p className="hidden text-xs text-muted-foreground sm:block">{portalLabel}</p>
             </div>
