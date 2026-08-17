@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Link2, Loader2, ScanSearch, Search } from 'lucide-react'
+import { Link2, Loader2, ScanSearch, Search, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ConfidenceGauge } from '@/components/confidence-gauge'
 import { PredictionBadge } from '@/components/prediction-badge'
@@ -19,6 +19,7 @@ export function DetectView({ userId }: { userId?: number }) {
   const [url, setUrl] = useState('')
   const [scanning, setScanning] = useState(false)
   const [result, setResult] = useState<Result | null>(null)
+  const [errorMsg, setErrorMsg] = useState('')
   const [recentScans, setRecentScans] = useState<ScanRecord[]>([])
 
   const fetchRecent = () => {
@@ -48,6 +49,7 @@ export function DetectView({ userId }: { userId?: number }) {
     if (!url.trim() || scanning) return
     setScanning(true)
     setResult(null)
+    setErrorMsg('')
     
     try {
       const response = await fetch(`${API_URL}/predict`, {
@@ -58,9 +60,11 @@ export function DetectView({ userId }: { userId?: number }) {
         body: JSON.stringify({ url: url.trim(), user_id: userId }),
       })
       
-      if (!response.ok) throw new Error('Network response was not ok')
-      
       const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.detail || 'Terjadi kesalahan saat memproses URL.')
+      }
       
       setResult({
         url: data.url,
@@ -70,8 +74,8 @@ export function DetectView({ userId }: { userId?: number }) {
       
       // Refresh table after new scan
       fetchRecent()
-    } catch (error) {
-      console.error('Error classifying URL:', error)
+    } catch (error: any) {
+      setErrorMsg(error.message || 'Gagal menganalisis URL.')
     } finally {
       setScanning(false)
     }
@@ -124,6 +128,16 @@ export function DetectView({ userId }: { userId?: number }) {
           </Button>
         </div>
       </form>
+
+      {errorMsg && (
+        <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-400 text-sm flex items-start gap-3 shadow-lg backdrop-blur">
+          <AlertTriangle className="size-5 shrink-0 mt-0.5 text-amber-400" />
+          <div>
+            <p className="font-semibold text-amber-300">Pemberitahuan Validasi Domain</p>
+            <p className="mt-0.5 text-amber-200/90">{errorMsg}</p>
+          </div>
+        </div>
+      )}
 
       {result && (
         <section
