@@ -82,9 +82,10 @@ export default function Page() {
     return <AuthView onAuth={handleAuth} />
   }
 
-  const rawName = user.email.split('@')[0]
+  const userEmail = user?.email || ''
+  const rawName = userEmail.includes('@') ? userEmail.split('@')[0] : (userEmail || 'Pengguna')
   const formattedName = rawName.charAt(0).toUpperCase() + rawName.slice(1)
-  const initials = rawName.substring(0, 2).toUpperCase()
+  const initials = rawName.substring(0, 2).toUpperCase() || 'US'
 
   if (user.role === 'admin') {
     return (
@@ -95,7 +96,7 @@ export default function Page() {
         activeKey={adminTab}
         onNavigate={setAdminTab}
         userName={formattedName}
-        userEmail={user.email}
+        userEmail={userEmail}
         userInitials={initials}
         onLogout={handleLogout}
       >
@@ -115,7 +116,7 @@ export default function Page() {
       activeKey={userTab}
       onNavigate={setUserTab}
       userName={formattedName}
-      userEmail={user.email}
+      userEmail={userEmail}
       userInitials={initials}
       onLogout={handleLogout}
     >
