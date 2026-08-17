@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
   History,
   Info,
@@ -32,19 +32,54 @@ const adminNav: NavItem[] = [
 
 export default function Page() {
   const [user, setUser] = useState<User | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   const [userTab, setUserTab] = useState('detect')
   const [adminTab, setAdminTab] = useState('overview')
 
-  if (!user) {
+  // Load session from localStorage on initial mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('phishguard_user')
+      if (saved) {
+        setUser(JSON.parse(saved))
+      }
+    } catch (e) {
+      console.error('Failed to load user session', e)
+    } finally {
+      setIsLoaded(true)
+    }
+  }, [])
+
+  const handleAuth = (u: User) => {
+    setUser(u)
+    try {
+      localStorage.setItem('phishguard_user', JSON.stringify(u))
+    } catch (e) {
+      console.error('Failed to save user session', e)
+    }
+    setUserTab('detect')
+    setAdminTab('overview')
+  }
+
+  const handleLogout = () => {
+    setUser(null)
+    try {
+      localStorage.removeItem('phishguard_user')
+    } catch (e) {
+      console.error('Failed to remove user session', e)
+    }
+  }
+
+  if (!isLoaded) {
     return (
-      <AuthView
-        onAuth={(u) => {
-          setUser(u)
-          setUserTab('detect')
-          setAdminTab('overview')
-        }}
-      />
+      <main className="app-bg flex min-h-dvh items-center justify-center">
+        <div className="size-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      </main>
     )
+  }
+
+  if (!user) {
+    return <AuthView onAuth={handleAuth} />
   }
 
   if (user.role === 'admin') {
@@ -58,7 +93,7 @@ export default function Page() {
         userName="Admin User"
         userEmail={user.email}
         userInitials={user.email.substring(0, 2).toUpperCase()}
-        onLogout={() => setUser(null)}
+        onLogout={handleLogout}
       >
         {adminTab === 'overview' && <AdminOverview />}
         {adminTab === 'global' && <GlobalHistoryView />}
@@ -78,7 +113,7 @@ export default function Page() {
       userName="Pengguna"
       userEmail={user.email}
       userInitials={user.email.substring(0, 2).toUpperCase()}
-      onLogout={() => setUser(null)}
+      onLogout={handleLogout}
     >
       {userTab === 'detect' && <DetectView userId={user.id} />}
       {userTab === 'history' && <UserHistoryView userId={user.id} />}
